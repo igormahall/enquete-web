@@ -1,5 +1,8 @@
 <div class="container">
-  <h1>Enquetes Disponíveis</h1>
+  <div class="list-header">
+    <h1>Enquetes Disponíveis</h1>
+    <a routerLink="/enquetes/nova" class="add-button">Criar Nova Enquete</a>
+  </div>
 
   <div *ngIf="enquetes.length > 0; else noEnquetes">
     <ul>

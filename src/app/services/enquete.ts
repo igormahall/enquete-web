@@ -36,4 +36,8 @@ export class EnqueteService {
     }
     return participantId;
   }
+
+  createEnquete(data: { titulo: string, opcoes_input: string[] }): Observable<Enquete> {
+    return this.http.post<Enquete>(`${this.apiUrl}/enquetes/`, data);
+  }
 }

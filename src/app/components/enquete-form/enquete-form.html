@@ -1,0 +1,31 @@
+<div class="container">
+  <h1>Criar Nova Enquete</h1>
+  <form [formGroup]="enqueteForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="titulo">Título da Enquete</label>
+      <input id="titulo" type="text" formControlName="titulo">
+    </div>
+
+    <div class="form-group">
+      <label>Opções de Voto</label>
+      <div formArrayName="opcoes">
+        <div *ngFor="let opcao of opcoes.controls; let i=index" class="option-input">
+          <input [formControlName]="i" placeholder="Digite a opção {{ i + 1 }}">
+          <button type="button" (click)="removeOpcao(i)" class="remove-btn" [disabled]="opcoes.length <= 2">
+            &times;
+          </button>
+        </div>
+      </div>
+      <button type="button" (click)="addOpcao()" class="add-option-btn">
+        + Adicionar Opção
+      </button>
+    </div>
+
+    <div class="action-buttons">
+      <a routerLink="/" class="cancel-btn">Cancelar</a>
+      <button type="submit" [disabled]="enqueteForm.invalid || isSubmitting">
+        {{ isSubmitting ? 'Salvando...' : 'Salvar Enquete' }}
+      </button>
+    </div>
+  </form>
+</div>
