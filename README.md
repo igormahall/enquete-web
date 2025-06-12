@@ -1,59 +1,87 @@
-# Enquete
+# 📝 Frontend (Angular) para Sistema de Enquetes
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.2.
+Este documento resume as etapas lógicas e as decisões de arquitetura tomadas durante a construção da interface de usuário para a **API de Enquetes**.
 
-## Development server
+---
 
-To start a local development server, run:
+## 1️⃣ Estrutura e Configuração Inicial
 
-```bash
-ng serve
-```
+O projeto foi iniciado utilizando o **Angular CLI**, com a arquitetura moderna de **Standalone Components**, que simplifica a estrutura de módulos.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Comunicação com API:**  
+  A comunicação com o backend foi habilitada através da função `provideHttpClient()` no arquivo `app.config.ts`, permitindo o uso do serviço `HttpClient` em toda a aplicação.
 
-## Code scaffolding
+- **Estrutura de Pastas:**  
+  Para manter o código organizado e escalável, foi adotada a seguinte estrutura dentro de `src/app/`:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+  - `models/`: Contém as interfaces TypeScript (`Enquete`, `Opcao`) que definem a "forma" dos dados da API, garantindo a segurança de tipos.
+  - `services/`: Centraliza a lógica de acesso à API.
+  - `components/`: Armazena os componentes reutilizáveis da UI.
 
-```bash
-ng generate component component-name
-```
+- **CORS:**  
+  Foi necessário configurar o backend Django (via `django-cors-headers`) para permitir requisições vindas do servidor de desenvolvimento do Angular:  
+  `http://localhost:4200`.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 2️⃣ Consumo da API e Gerenciamento de Dados
 
-## Building
+A interação com os endpoints do Django foi centralizada no `EnqueteService`.
 
-To build the project run:
+- `getEnquetes()`:  
+  Realiza uma requisição `GET /api/enquetes/` para buscar a lista de todas as enquetes ativas.
 
-```bash
-ng build
-```
+- `getEnqueteById(id)`:  
+  Realiza uma requisição `GET /api/enquetes/<id>/` para buscar os detalhes de uma única enquete.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `votar(enqueteId, opcaoId)`:  
+  Envia uma requisição `POST /api/enquetes/<id>/votar/` com o `id_opcao` e um `id_participante` gerado e salvo no `localStorage` para simular um usuário persistente e prevenir votos duplicados.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 3️⃣ Componentização e Roteamento
 
-```bash
-ng test
-```
+A interface foi dividida em componentes com responsabilidades claras, e o roteamento foi configurado para navegar entre eles.
 
-## Running end-to-end tests
+- **`AppComponent`**  
+  Atua como o "casco" principal da aplicação, contendo apenas o `<router-outlet>` para renderizar os componentes das rotas.
 
-For end-to-end (e2e) testing, run:
+- **`EnqueteListComponent`**  
+  Página inicial (`path: ''`).  
+  Chama o `EnqueteService` para buscar e exibir a lista de enquetes. Cada item da lista é um link (`routerLink`) para a rota de detalhes.
 
-```bash
-ng e2e
-```
+- **`EnqueteDetailComponent`**  
+  Página de detalhes (`path: 'enquetes/:id'`).  
+  Utiliza o `ActivatedRoute` do Angular para extrair o `:id` da URL, chama o serviço para buscar os dados daquela enquete específica e exibe suas opções.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 4️⃣ Melhorias de Usabilidade (UX)
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Para fornecer feedback claro ao usuário, foi implementado um estado de **"carregando"** durante a votação.
+
+- Uma variável booleana `isVoting` foi adicionada ao `EnqueteDetailComponent`.
+- Essa variável é ativada (`true`) quando o usuário clica em "Votar" e desativada (`false`) quando a API responde (seja com sucesso ou erro).
+- No template HTML:
+  - A propriedade `[disabled]` do botão é atrelada a essa variável para prevenir cliques duplos.
+  - O texto do botão muda para `"Votando..."` para informar que a ação está em progresso.
+
+---
+
+## 🚀 Próximos Passos Sugeridos
+
+O projeto está funcional, mas pode ser estendido com novas funcionalidades:
+
+- **Link de "Voltar":**  
+  Adicionar um botão na página de detalhes para retornar facilmente à lista de enquetes.
+
+- **Formulário de Criação:**  
+  Construir um novo componente e rota que permita ao usuário criar novas enquetes através de um formulário (exigiria a criação do endpoint `POST /api/enquetes/` no backend).
+
+- **Feedback de Erro Aprimorado:**  
+  Substituir os `alert()`s por um sistema de notificações mais elegante (conhecido como **"toasts"** ou **"snackbars"**).
+
+- **Deploy:**  
+  Publicar o backend Django (ex: Heroku, DigitalOcean) e o frontend Angular (ex: Netlify, Vercel, GitHub Pages) para tornar a aplicação acessível na internet.
+
+---
