@@ -1,0 +1,22 @@
+<div class="container">
+  <div *ngIf="enquete; else loading">
+    <h1>{{ enquete.titulo }}</h1>
+    <p>Vote em uma das opções abaixo:</p>
+
+    <ul class="options-list">
+      <li *ngFor="let opcao of enquete.opcoes">
+        <span>{{ opcao.texto_opcao }}</span>
+        <div class="vote-section">
+          <span class="votes">Votos: {{ opcao.votos }}</span>
+          <button (click)="votar(opcao.id)" [disabled]="isVoting">
+            {{ isVoting ? 'Votando...' : 'Votar' }}
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #loading>
+    <p>Carregando detalhes da enquete...</p>
+  </ng-template>
+</div>

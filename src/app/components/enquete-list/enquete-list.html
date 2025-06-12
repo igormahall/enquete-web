@@ -1,0 +1,15 @@
+<div class="container">
+  <h1>Enquetes Disponíveis</h1>
+
+  <div *ngIf="enquetes.length > 0; else noEnquetes">
+    <ul>
+      <li *ngFor="let enquete of enquetes">
+        <a [routerLink]="['/enquetes', enquete.id]">{{ enquete.titulo }}</a>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #noEnquetes>
+    <p>Nenhuma enquete disponível no momento.</p>
+  </ng-template>
+</div>

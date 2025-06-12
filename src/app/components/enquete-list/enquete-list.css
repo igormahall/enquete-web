@@ -1,0 +1,27 @@
+ul {
+  list-style-type: none; /* Remove as bolinhas da lista */
+  padding: 0;
+}
+
+li {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease-in-out; /* Animação suave para o hover */
+}
+
+li:hover {
+  border-color: #3b82f6; /* Borda azul ao passar o mouse */
+  transform: translateY(-2px); /* Efeito de "levantar" o card */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+a {
+  display: block; /* Faz o link ocupar todo o espaço do <li> */
+  padding: 16px 20px;
+  text-decoration: none; /* Remove o sublinhado do link */
+  color: #1f2937;
+  font-size: 1.1rem;
+  font-weight: 500;
+}

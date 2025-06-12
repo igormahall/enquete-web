@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+/* Reset básico e definição da fonte */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #f4f7f9; /* Um cinza bem claro para o fundo */
+  color: #333;
+}
+
+/* Classe de container principal para centralizar o conteúdo */
+.container {
+  max-width: 800px;
+  margin: 40px auto; /* 40px de margem no topo/embaixo, auto nas laterais para centralizar */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+  color: #1a2a45;
+}

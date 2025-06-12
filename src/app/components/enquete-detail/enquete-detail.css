@@ -1,0 +1,48 @@
+.options-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 24px;
+}
+
+.options-list li {
+  display: flex; /* Alinha os itens na horizontal */
+  justify-content: space-between; /* Espaça o nome da opção e a seção de voto */
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.vote-section {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espaço entre o contador de votos e o botão */
+}
+
+.votes {
+  color: #6b7280;
+  font-size: 0.9rem;
+  min-width: 70px; /* Garante alinhamento mesmo com números diferentes */
+}
+
+button {
+  background-color: #3b82f6; /* Azul primário */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #2563eb; /* Azul um pouco mais escuro no hover */
+}
+
+button:disabled {
+  background-color: #9ca3af; /* Cinza para o estado desabilitado */
+  cursor: not-allowed;
+}
