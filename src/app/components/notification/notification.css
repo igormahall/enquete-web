@@ -1,0 +1,35 @@
+.notification-container {
+  position: fixed; /* Fica fixo na tela */
+  bottom: 20px;
+  right: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000; /* Garante que ficará sobre outros elementos */
+  min-width: 250px;
+}
+
+/* Estilo para sucesso */
+.notification-container.success {
+  background-color: #10b981; /* Verde */
+}
+
+/* Estilo para erro */
+.notification-container.error {
+  background-color: #ef4444; /* Vermelho */
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 16px;
+  padding: 0;
+  line-height: 1;
+}

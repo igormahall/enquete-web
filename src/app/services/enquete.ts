@@ -13,31 +13,26 @@ export class EnqueteService {
   }
 
   getEnquetes(): Observable<Enquete[]> {
+    // URL com crases (`)
     return this.http.get<Enquete[]>(`${this.apiUrl}/enquetes/`);
   }
 
   getEnqueteById(id: number): Observable<Enquete> {
+    // CORRIGIDO: URL com crases (`)
     return this.http.get<Enquete>(`${this.apiUrl}/enquetes/${id}/`);
   }
 
-  votar(enqueteId: number, opcaoId: number): Observable<Enquete> {
+  votar(enqueteId: number, opcaoId: number, participantId: string): Observable<Enquete> {
     const payload = {
       id_opcao: opcaoId,
-      id_participante: this.getOrCreateParticipantId()
+      id_participante: participantId
     };
+    // CORRIGIDO: URL com crases (`)
     return this.http.post<Enquete>(`${this.apiUrl}/enquetes/${enqueteId}/votar/`, payload);
   }
 
-  private getOrCreateParticipantId(): string {
-    let participantId = localStorage.getItem('participantId');
-    if (!participantId) {
-      participantId = `participant-${Date.now()}-${Math.random()}`;
-      localStorage.setItem('participantId', participantId);
-    }
-    return participantId;
-  }
-
   createEnquete(data: { titulo: string, opcoes_input: string[] }): Observable<Enquete> {
+    // CORRIGIDO: URL com crases (`)
     return this.http.post<Enquete>(`${this.apiUrl}/enquetes/`, data);
   }
 }

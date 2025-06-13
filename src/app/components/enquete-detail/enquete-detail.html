@@ -1,14 +1,23 @@
 <div class="container">
+  <div class="top-bar">
+    <a routerLink="/" class="back-button">← Voltar para a Lista</a>
+
+    <div class="participant-input">
+      <label for="participant">Seu Nome (para votar):</label>
+      <input id="participant" type="text" [(ngModel)]="participantName" placeholder="Digite seu nome...">
+    </div>
+  </div>
+
   <div *ngIf="enquete; else loading">
     <h1>{{ enquete.titulo }}</h1>
     <p>Vote em uma das opções abaixo:</p>
 
     <ul class="options-list">
-      <li *ngFor="let opcao of enquete.opcoes">
+      <li *ngFor="let opcao of enquete.opcoes" [ngClass]="{'highlight': isMaxVotos(opcao.votos)}">
         <span>{{ opcao.texto_opcao }}</span>
         <div class="vote-section">
           <span class="votes">Votos: {{ opcao.votos }}</span>
-          <button (click)="votar(opcao.id)" [disabled]="isVoting">
+          <button (click)="votar(opcao.id)" [disabled]="isVoting || enquete.status === 'Fechada'">
             {{ isVoting ? 'Votando...' : 'Votar' }}
           </button>
         </div>

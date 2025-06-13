@@ -1,9 +1,10 @@
-// src/app/components/enquete-form/enquete-form.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { EnqueteService} from '../../services/enquete';
+import { EnqueteService } from '../../services/enquete';
+import { NotificationService } from '../../services/notification';
+import { Enquete } from '../../models/enquete.model'; // Importe o modelo Enquete
 
 @Component({
   selector: 'app-enquete-form',
@@ -19,7 +20,8 @@ export class EnqueteFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private enqueteService: EnqueteService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {
     this.enqueteForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.minLength(5)]],
@@ -32,22 +34,18 @@ export class EnqueteFormComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  // Getter para acessar o FormArray de opções facilmente no template
   get opcoes(): FormArray {
     return this.enqueteForm.get('opcoes') as FormArray;
   }
 
-  // Adiciona um novo campo de opção ao formulário
   addOpcao(): void {
     this.opcoes.push(this.fb.control('', Validators.required));
   }
 
-  // Remove uma opção pelo seu índice
   removeOpcao(index: number): void {
     this.opcoes.removeAt(index);
   }
 
-  // Lida com o envio do formulário
   onSubmit(): void {
     if (this.enqueteForm.invalid) {
       return;
@@ -61,13 +59,15 @@ export class EnqueteFormComponent implements OnInit {
     };
 
     this.enqueteService.createEnquete(payload).subscribe({
-      next: (novaEnquete) => {
-        alert('Enquete criada com sucesso!');
+      // CORRIGIDO: Adicionado o tipo para 'novaEnquete'
+      next: (novaEnquete: Enquete) => {
+        this.notificationService.show('Enquete criada com sucesso!');
         this.isSubmitting = false;
         this.router.navigate(['/enquetes', novaEnquete.id]);
       },
-      error: (err) => {
-        alert('Ocorreu um erro ao criar a enquete.');
+      // CORRIGIDO: Adicionado o tipo 'any' para 'err'
+      error: (err: any) => {
+        this.notificationService.show('Ocorreu um erro ao criar a enquete.', 'error');
         console.error(err);
         this.isSubmitting = false;
       }
