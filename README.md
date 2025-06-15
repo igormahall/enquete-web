@@ -7,14 +7,14 @@ Construída em **Angular 17** com _Standalone Components_ e **Reactive Forms**.
 
 ## ✨ Visão Geral
 
-| Item | Detalhe |
-|------|---------|
-| **Stack** | Angular 17 · TypeScript · RxJS · Vite · Tailwind |
-| **Arquitetura** | Standalone Components + feature folders |
-| **API** | Django REST Framework (`/api/enquetes/…`) |
-| **Estado** | Serviços `EnqueteService` + Observables |
-| **Build** | `pnpm run build` / `vite preview` |
-| **Deploy** | Qualquer static host (GitHub Pages, Netlify, Vercel, S3…) |
+| Item            | Detalhe                                                  |
+|-----------------|----------------------------------------------------------|
+| **Stack**       | Angular 17 · TypeScript · RxJS · Vite · Tailwind         |
+| **Arquitetura** | Standalone Components + Services + feature folders       |
+| **API**         | Django REST Framework (`/api/enquetes/…`)                |
+| **Estado**      | Serviços `EnqueteService` + Observables (RxJS)           |
+| **Build**       | `ng build`                                               |
+| **Deploy**      | Qualquer host de sites estáticos (Netlify, Vercel, etc.) |
 
 ---
 
@@ -23,87 +23,101 @@ Construída em **Angular 17** com _Standalone Components_ e **Reactive Forms**.
 ```
 src/app
 ├─ models/        # Interfaces TypeScript (Enquete, Opcao)
-├─ services/      # Acesso à API e cache de dados
-├─ components/    # UI isolada e reutilizável
-└─ app.routes.ts  # Rotas raiz
+├─ services/      # Lógica de acesso à API e de notificações
+├─ components/    # Componentes de UI para cada tela/feature
+└─ app.routes.ts  # Rotas raiz da aplicação
 ```
 
 ---
 
 ## ⚙️ Configuração Inicial
 
-1. **Criar projeto**
+1. **Clonar e Instalar**
    ```bash
-   pnpm create @angular/app@latest enquetes-frontend --standalone
-   cd enquetes-frontend
+   # Clonar o repositório
+   git clone https://github.com/<seu-usuario>/enquete-web.git
+   cd enquete-web
+   
+   # Instalar dependências
+   npm install
    ```
 
-2. **HTTP global**  
-   Em `app.config.ts` habilitamos `provideHttpClient()` para uso de `HttpClient` em toda a aplicação.
+2. **Configurar a API de Backend**
+   - Este projeto precisa da **API Django** (`enquete-api`) rodando localmente.
+   - No arquivo `src/environments/environment.ts`, certifique-se de que a apiUrl está apontando para o seu backend (ex: `http://127.0.0.1:8000/api`).
+   
 
-3. **CORS no backend**  
-   No Django adicionamos `django-cors-headers` permitindo `http://localhost:4200`.
+3. **Executar o App**  
+   ```bash
+   ng serve
+   ```
 
 ---
 
 ## 🎯 Funcionalidades Principais
 
-| Serviço | Método | Chamada | Descrição |
-|---------|--------|---------|-----------|
-| `EnqueteService` | `getEnquetes()` | `GET /api/enquetes/` | Lista todas as enquetes ativas |
-| | `getEnqueteById(id)` | `GET /api/enquetes/{id}/` | Detalhe de uma enquete |
-| | `createEnquete(data)` | `POST /api/enquetes/` | Cria enquete (`titulo`, `opcoes_input[]`) |
-| | `votar(enqueteId, opcaoId, participantId)` | `POST /api/enquetes/{id}/votar/` | Registra voto |
+### Gerenciamento de Dados (Services)
+
+A interação com a API é centralizada no EnqueteService para desacoplamento e reutilização.
+
+| Método                | Chamada                          | Descrição                                              |
+|-----------------------|----------------------------------|--------------------------------------------------------|
+| `getEnquetes()`       | `GET /api/enquetes/`             | Lista todas as enquetes (abertas e fechadas).          |
+| `getEnqueteById(id)`  | `GET /api/enquetes/{id}/`        | Detalhes de uma enquete específica.                    |
+| `createEnquete(data)` | `POST /api/enquetes/`            | Cria uma nova enquete com `titulo` e `opcoes_input[]`. |
+| `votar(...)`          | `POST /api/enquetes/{id}/votar/` | Registra um voto para um `id_participante`.            |
 
 ---
 
 ## 🧩 Componentização & Rotas
 
-| Rota | Componente | Responsabilidade |
-|------|------------|------------------|
-| `/` | **EnqueteListComponent** | Lista enquetes + link _“Nova Enquete”_ |
-| `/enquetes/:id` | **EnqueteDetailComponent** | Detalhe, votação, ranking ao vivo |
-| `/enquetes/nova` | **EnqueteFormComponent** | Formulário reativo para criação |
-| _(global)_ | **NotificationComponent** | Toasts de sucesso/erro |
-| _(shell)_ | **AppComponent** | `<router-outlet>` + layout base |
+A interface foi dividida em componentes com responsabilidades claras, gerenciados pelo `app.routes.ts`.
+
+| Rota             | Componente                 | Responsabilidade                                                                                                 |
+|------------------|----------------------------|------------------------------------------------------------------------------------------------------------------|
+| `/`              | **EnqueteListComponent**   | Exibe a lista de enquetes, seu status e votos. Contém o link para "Nova Enquete".                                |
+| `/enquetes/:id`  | **EnqueteDetailComponent** | Exibe os detalhes de uma enquete, permite a votação e o re-torno à lista.                                        |
+| `/enquetes/nova` | **EnqueteFormComponent**   | Formulário reativo (`Reactive Forms`) para a criação de novas enquetes, com adição e remoção dinâmica de opções. |
+| _(global)_       | **NotificationComponent**  | Exibe notificações "toast" de sucesso e erro em toda a aplicação.                                                |
+| _(shell)_        | **AppComponent**           | Atua como o contêiner principal com o `<router-outlet>`.                                                         |
 
 ---
 
-## 💎 Experiência do Usuário
+## 💎 Experiência do Usuário (UX)
 
-- **Toasts**: `NotificationService` exibe feedback não-intrusivo.
-- **Votação segura**: Botões desabilitados → `"Votando..."` para evitar duplo clique.
-- **Destaque do vencedor**: Opção líder recebe _fundo verde_.
-- **Status da enquete**: Banner se **Fechada** + botões desabilitados.
-- **Simulação de multi-usuário**: Campo _“Nome do participante”_ testa regra _1 voto / usuário_.
-- **Navegação limpa**: `routerLink="/"` no botão **Voltar** evita loop no histórico.
+- **Notificações "Toast"**: O `NotificationService` exibe feedback não-intrusivo para ações como criação de enquetes e erros de votação.
+- **Votação segura**: Os botões são desabilitados e o texto muda para `"Votando..."` durante a requisição para evitar cliques duplos.
+- **Destaque do vencedor**: A opção com mais votos recebe um destaque visual na tela de detalhes.
+- **Status da enquete**: Um "banner" informa se a enquete está **Fechada** e desabilita os botões de voto. Tags visuais na lista principal também mostram o status.
+- **Simulação de multi-usuário**: Um campo de texto para o nome do participante permite testar a regra de "1 voto por usuário" de forma flexível.
+- **Navegação limpa**: O `routerLink="/"` no botão **Voltar** garante que o usuário sepre retorne à lista principal, evitando loops no histórico do navegador.
 
 ---
 
 ## 🚀 Deploy
 
-1. **Backend**: publique o Django (Heroku, Render, Fly .io, VPS).
+1. **Backend**: publique o Django (Render, Heroku).
 2. **Frontend**:
-   ```bash
-   pnpm run build            # Gera /dist
-   pnpm vite preview         # Teste local
-   ```
-   Faça upload do conteúdo de `dist/` em host estático (GitHub Pages, Netlify…).
+   - Atualize a `apiURL` no arquivo `src_environments/environment.prod.ts` com a URL do seu backend em produção;
+   - Execute o comando de build:
+      ```bash
+      ng build
+      ```
+   - Faça o upload do conteúdo da pasta `dist/enquete-web` para um host de sites estáticos (ex: Netlify, Vercel).
 
-3. **Configurar URLs**
-  - Defina `API_BASE_URL` conforme domínio de produção.
-  - Mantenha CORS atualizado no backend.
+
+3. **CORS**: Lembre-se de atualizar a variável `CORS_ALLOWED_ORIGINS` no seu ambiente de produção do Django 
+para incluir a URL do seu frontend online.
 
 ---
 
 ## 🤝 Contribuição
 
-1. Fork → Crie branch → _Commit_ claro
-2. `pnpm run lint` e `pnpm run test` antes do PR
-3. Descreva o _contexto_ no PR template
+Contribuições são bem-vindas! Se você quiser sugerir melhorias, relatar bugs ou propor novas funcionalidades, 
+sinta-se à vontade para abrir uma issue ou pull request.
 
 ---
 
 ## 📝 Licença
 
-Distribuído sob a licença **MIT** — veja `LICENSE` para mais detalhes.
+Distribuído sob a licença **MIT**.
