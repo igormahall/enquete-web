@@ -22,4 +22,9 @@ export class EnqueteListComponent implements OnInit {
         this.enquetes = dados;
       });
   }
+
+  getTotalVotos(enquete: Enquete): number {
+    return enquete.opcoes.reduce((soma, opcao) => soma + opcao.votos, 0);
+  }
+
 }

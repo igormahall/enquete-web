@@ -46,3 +46,34 @@ a {
 .add-button:hover {
   background-color: #059669;
 }
+
+a {
+  display: flex; /* Altera o layout do link para flexbox */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tags-container {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 12px; /* Deixa a tag bem arredondada */
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+
+.tag-votes {
+  background-color: #6b7280; /* Cinza */
+}
+
+.tag-status-aberta {
+  background-color: #10b981; /* Verde */
+}
+
+.tag-status-fechada {
+  background-color: #ef4444; /* Vermelho */
+}

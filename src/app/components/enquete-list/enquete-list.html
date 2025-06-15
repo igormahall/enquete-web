@@ -7,7 +7,18 @@
   <div *ngIf="enquetes.length > 0; else noEnquetes">
     <ul>
       <li *ngFor="let enquete of enquetes">
-        <a [routerLink]="['/enquetes', enquete.id]">{{ enquete.titulo }}</a>
+        <a [routerLink]="['/enquetes', enquete.id]">
+          <span>{{ enquete.titulo }}</span>
+          <div class="tags-container">
+            <span class="tag tag-votes">{{ getTotalVotos(enquete) }} votos</span>
+            <span class="tag" [ngClass]="{
+        'tag-status-aberta': enquete.status === 'Aberta',
+        'tag-status-fechada': enquete.status === 'Fechada'
+      }">
+        {{ enquete.status }}
+      </span>
+          </div>
+        </a>
       </li>
     </ul>
   </div>
