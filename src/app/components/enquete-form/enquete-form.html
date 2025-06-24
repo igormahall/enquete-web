@@ -1,26 +1,70 @@
 <div class="container">
   <h1>Criar Nova Enquete</h1>
+
   <form [formGroup]="enqueteForm" (ngSubmit)="onSubmit()">
+    <!-- Campo: Título -->
     <div class="form-group">
       <label for="titulo">Título da Enquete</label>
-      <input id="titulo" type="text" formControlName="titulo">
+      <input
+        id="titulo"
+        type="text"
+        formControlName="titulo"
+        [class.invalid]="enqueteForm.get('titulo')?.invalid && enqueteForm.get('titulo')?.touched"
+        placeholder="Ex: Qual o melhor framework?"
+      />
+      <small class="error-msg" *ngIf="enqueteForm.get('titulo')?.invalid && enqueteForm.get('titulo')?.touched">
+        O título é obrigatório e deve ter ao menos 5 caracteres.
+      </small>
     </div>
 
+    <!-- Campo: Opções -->
     <div class="form-group">
       <label>Opções de Voto</label>
       <div formArrayName="opcoes">
-        <div *ngFor="let opcao of opcoes.controls; let i=index" class="option-input">
-          <input [formControlName]="i" placeholder="Digite a opção {{ i + 1 }}">
-          <button type="button" (click)="removeOpcao(i)" class="remove-btn" [disabled]="opcoes.length <= 2">
+        <div *ngFor="let opcao of opcoes.controls; let i = index" class="option-input">
+          <input
+            [formControl]="opcao"
+            [placeholder]="'Digite a opção ' + (i + 1)"
+            [class.invalid]="isTouchedAndInvalid(i)"
+          />
+          <button
+            type="button"
+            class="remove-btn"
+            (click)="removeOpcao(i)"
+            [disabled]="opcoes.length <= 2"
+            title="Remover esta opção"
+          >
             &times;
           </button>
         </div>
       </div>
+
       <button type="button" (click)="addOpcao()" class="add-option-btn">
         + Adicionar Opção
       </button>
+
+      <small class="error-msg" *ngIf="opcoes.length < 2">
+        A enquete precisa de pelo menos duas opções.
+      </small>
     </div>
 
+    <!-- Campo: Duração da Enquete -->
+    <div class="form-group">
+      <label for="duracao_horas">Duração da Enquete (em horas)</label>
+      <input
+        id="duracao_horas"
+        type="number"
+        formControlName="duracao_horas"
+        min="1"
+        placeholder="Ex: 24"
+        [class.invalid]="enqueteForm.get('duracao_horas')?.invalid && enqueteForm.get('duracao_horas')?.touched"
+      />
+      <small class="error-msg" *ngIf="enqueteForm.get('duracao_horas')?.invalid && enqueteForm.get('duracao_horas')?.touched">
+        A duração é obrigatória e deve ser de pelo menos 1 hora.
+      </small>
+    </div>
+
+    <!-- Ações -->
     <div class="action-buttons">
       <a routerLink="/" class="cancel-btn">Cancelar</a>
       <button type="submit" [disabled]="enqueteForm.invalid || isSubmitting">

@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormArray,
+  FormControl,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { EnqueteService } from '../../services/enquete';
 import { NotificationService } from '../../services/notification';
-import { Enquete } from '../../models/enquete.model'; // Importe o modelo Enquete
+import { Enquete } from '../../models/enquete.model';
 
 @Component({
   selector: 'app-enquete-form',
@@ -14,7 +21,7 @@ import { Enquete } from '../../models/enquete.model'; // Importe o modelo Enquet
   styleUrls: ['./enquete-form.css']
 })
 export class EnqueteFormComponent implements OnInit {
-  enqueteForm: FormGroup;
+  enqueteForm!: FormGroup;
   isSubmitting = false;
 
   constructor(
@@ -22,32 +29,47 @@ export class EnqueteFormComponent implements OnInit {
     private enqueteService: EnqueteService,
     private router: Router,
     private notificationService: NotificationService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
+    this.initForm();
+  }
+
+  private initForm(): void {
     this.enqueteForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.minLength(5)]],
-      opcoes: this.fb.array([
-        this.fb.control('', Validators.required),
-        this.fb.control('', Validators.required)
-      ], [Validators.required, Validators.minLength(2)])
+      opcoes: this.fb.array<FormControl>(
+        [this.fb.control('', Validators.required), this.fb.control('', Validators.required)],
+        [Validators.minLength(2)]
+      ),
+      duracao_horas: [1, [Validators.required, Validators.min(1)]]
     });
   }
 
-  ngOnInit(): void {}
-
-  get opcoes(): FormArray {
-    return this.enqueteForm.get('opcoes') as FormArray;
+  get opcoes(): FormArray<FormControl> {
+    return this.enqueteForm.get('opcoes') as FormArray<FormControl>;
   }
 
   addOpcao(): void {
+    if (this.opcoes.length >= 10) {
+      this.notificationService.show('Limite de 10 opções atingido.', 'warning');
+      return;
+    }
     this.opcoes.push(this.fb.control('', Validators.required));
   }
 
   removeOpcao(index: number): void {
+    if (this.opcoes.length <= 2) {
+      this.notificationService.show('Uma enquete deve ter pelo menos 2 opções.', 'warning');
+      return;
+    }
     this.opcoes.removeAt(index);
   }
 
   onSubmit(): void {
     if (this.enqueteForm.invalid) {
+      this.enqueteForm.markAllAsTouched();
+      this.notificationService.show('Preencha todos os campos obrigatórios corretamente.', 'error');
       return;
     }
 
@@ -55,22 +77,31 @@ export class EnqueteFormComponent implements OnInit {
 
     const payload = {
       titulo: this.enqueteForm.value.titulo,
-      opcoes_input: this.enqueteForm.value.opcoes.filter((opcao: string) => opcao)
+      duracao_horas: this.enqueteForm.value.duracao_horas,
+      opcoes_input: this.opcoes.value.map(op => op.trim()).filter(op => op !== '')
     };
 
     this.enqueteService.createEnquete(payload).subscribe({
-      // CORRIGIDO: Adicionado o tipo para 'novaEnquete'
       next: (novaEnquete: Enquete) => {
         this.notificationService.show('Enquete criada com sucesso!');
-        this.isSubmitting = false;
         this.router.navigate(['/enquetes', novaEnquete.id]);
       },
-      // CORRIGIDO: Adicionado o tipo 'any' para 'err'
       error: (err: any) => {
-        this.notificationService.show('Ocorreu um erro ao criar a enquete.', 'error');
-        console.error(err);
+        console.error('Erro ao criar enquete:', err);
+        this.notificationService.show(
+          err?.error?.detail || 'Ocorreu um erro ao criar a enquete.',
+          'error'
+        );
+      },
+      complete: () => {
         this.isSubmitting = false;
       }
     });
   }
+
+  isTouchedAndInvalid(index: number): boolean {
+    const control = this.opcoes.at(index);
+    return control.touched && control.invalid;
+  }
+
 }

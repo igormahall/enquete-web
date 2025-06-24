@@ -4,29 +4,34 @@
       <img class="logo" src="../../../assets/img/pollab_logo.png" alt="Logo Pollab">
       <h1>Enquetes Disponíveis</h1>
     </div>
-    <a routerLink="/enquetes/nova" class="add-button">Criar Nova Enquete</a>
+    <a routerLink="/enquetes/nova" class="add-button">+ Nova Enquete</a>
   </div>
 
-  <div *ngIf="enquetes.length > 0; else noEnquetes">
-    <ul>
-      <li *ngFor="let enquete of enquetes">
-        <a [routerLink]="['/enquetes', enquete.id]">
-          <span>{{ enquete.titulo }}</span>
-          <div class="tags-container">
-            <span class="tag tag-votes">{{ getTotalVotos(enquete) }} votos</span>
-            <span class="tag" [ngClass]="{
-        'tag-status-aberta': enquete.status === 'Aberta',
-        'tag-status-fechada': enquete.status === 'Fechada'
-      }">
-        {{ enquete.status }}
-      </span>
+  <ng-container *ngIf="enquetes.length > 0; else noEnquetes">
+    <ul class="enquete-list">
+      <li *ngFor="let enquete of enquetes" class="enquete-item">
+        <a [routerLink]="['/enquetes', enquete.id]" class="enquete-link">
+          <div class="enquete-info">
+            <span class="enquete-titulo">{{ enquete.titulo }}</span>
+            <div class="tags-container">
+              <span class="tag tag-votes">{{ getTotalVotos(enquete) }} votos</span>
+              <span
+                class="tag"
+                [ngClass]="{
+                  'tag-status-aberta': enquete.status === 'Aberta',
+                  'tag-status-encerrada': enquete.status === 'Encerrada'
+                }"
+              >
+                {{ enquete.status }}
+              </span>
+            </div>
           </div>
         </a>
       </li>
     </ul>
-  </div>
+  </ng-container>
 
   <ng-template #noEnquetes>
-    <p>Nenhuma enquete disponível no momento.</p>
+    <p class="sem-enquetes">Nenhuma enquete disponível no momento.</p>
   </ng-template>
 </div>

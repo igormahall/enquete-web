@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { EnqueteService } from '../../services/enquete';
@@ -13,10 +13,13 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './enquete-detail.html',
   styleUrls: ['./enquete-detail.css']
 })
-export class EnqueteDetailComponent implements OnInit {
+export class EnqueteDetailComponent implements OnInit, OnDestroy {
   enquete: Enquete | undefined;
   isVoting = false;
   participantName: string = '';
+  tempoRestante: string = '';
+  tempoCritico: boolean = false;
+  private timerInterval: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,45 +28,89 @@ export class EnqueteDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('--- RASTREAMENTO DE EXECUÇÃO ---');
     this.carregarEnquete();
   }
 
+  ngOnDestroy(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
   carregarEnquete(): void {
-    console.log('1. Método carregarEnquete() foi chamado.');
     const idParam = this.route.snapshot.paramMap.get('id');
-    console.log('2. Parâmetro "id" lido da URL:', idParam);
-
     if (idParam) {
-      console.log('3. O parâmetro "id" existe. Tentando converter para número.');
       const id = +idParam;
-      console.log('4. O "id" convertido é:', id);
-
       this.enqueteService.getEnqueteById(id).subscribe({
         next: (dados) => {
-          console.log('5. SUCESSO! Dados recebidos da API:', dados);
           this.enquete = dados;
+          this.atualizarTempoRestante();
+          this.iniciarContador();
         },
-        error: (err) => {
-          console.error('5. ERRO! Falha ao carregar detalhes da enquete:', err);
+        error: () => {
           this.notificationService.show('Não foi possível carregar a enquete.', 'error');
         }
       });
     } else {
-      console.error('3. ERRO CRÍTICO: O parâmetro "id" não foi encontrado na URL. Verifique o arquivo app.routes.ts.');
+      this.notificationService.show('Enquete inválida.', 'error');
     }
   }
 
-  // ... (métodos votar, voltar, isMaxVotos continuam os mesmos)
+  iniciarContador(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+
+    this.timerInterval = setInterval(() => {
+      this.atualizarTempoRestante();
+    }, 60000); // Atualiza a cada 60 segundos
+  }
+
+  atualizarTempoRestante(): void {
+    if (!this.enquete || this.enquete.status !== 'Aberta') {
+      this.tempoRestante = '';
+      this.tempoCritico = false;
+      return;
+    }
+
+    const agora = new Date();
+    const expira = new Date(this.enquete.expires_at);
+    const diffMs = expira.getTime() - agora.getTime();
+
+
+    if (diffMs <= 0) {
+      this.tempoRestante = 'Expirada há poucos instantes.';
+      this.tempoCritico = false;
+      return;
+    }
+
+    const diffMin = Math.floor(diffMs / 60000);
+    const horas = Math.floor(diffMin / 60);
+    const minutos = diffMin % 60;
+
+    this.tempoRestante = horas > 0
+      ? `Tempo restante: ${horas}h ${minutos}min`
+      : `Tempo restante: ${minutos}min`;
+
+    this.tempoCritico = diffMin <= 5;
+  }
+
   votar(opcaoId: number): void {
+    this.participantName = this.participantName.trim();
+
     if (!this.participantName) {
       this.notificationService.show('Por favor, digite seu nome para votar.', 'error');
       return;
     }
 
+    if (this.enquete?.status !== 'Aberta') {
+      this.notificationService.show('Esta enquete está encerrada.', 'error');
+      return;
+    }
+
     if (this.enquete && !this.isVoting) {
       this.isVoting = true;
-      this.enqueteService.votar(this.enquete.id, opcaoId, this.participantName.trim())
+      this.enqueteService.votar(this.enquete.id, opcaoId, this.participantName)
         .subscribe({
           next: () => {
             this.notificationService.show('Voto computado com sucesso!');
@@ -78,12 +125,15 @@ export class EnqueteDetailComponent implements OnInit {
     }
   }
 
-
   isMaxVotos(votos: number): boolean {
     if (!this.enquete || votos === 0) {
       return false;
     }
     const maxVotos = Math.max(...this.enquete.opcoes.map(o => o.votos));
     return votos === maxVotos;
+  }
+
+  trackByOpcaoId(index: number, opcao: any): number {
+    return opcao.id;
   }
 }

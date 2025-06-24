@@ -30,21 +30,20 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .add-button {
-  background-color: #10b981; /* Verde */
+  padding: 0.5rem 1rem;
+  background-color: #3f51b5;
   color: white;
-  padding: 10px 18px;
-  border-radius: 6px;
+  border-radius: 4px;
   text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  font-weight: bold;
 }
 
 .add-button:hover {
-  background-color: #059669;
+  background-color: #303f9f;
 }
 
 a {
@@ -55,38 +54,51 @@ a {
 
 .tags-container {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .tag {
-  padding: 4px 10px;
-  border-radius: 12px; /* Deixa a tag bem arredondada */
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .tag-votes {
-  background-color: #6b7280; /* Cinza */
+  background-color: #eee;
+  color: #555;
 }
 
 .tag-status-aberta {
-  background-color: #10b981; /* Verde */
+  background-color: #c8e6c9;
+  color: #2e7d32;
 }
 
-.tag-status-fechada {
-  background-color: #ef4444; /* Vermelho */
+.tag-status-encerrada {
+  background-color: #ffe0b2;
+  color: #ef6c00;
+}
+
+.tag-status-remover {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
+.sem-enquetes {
+  text-align: center;
+  color: #777;
+  font-style: italic;
 }
 
 .title-container {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 8px 0;
 }
 
 .logo {
   height: 40px;
+  margin-right: 1rem;
   width: auto;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -97,4 +109,42 @@ a {
   font-weight: 600;
   margin: 0;
   color: #1f2937; /* Azul escuro suave */
+}
+
+.container {
+  padding: 1.5rem;
+}
+
+.enquete-list {
+  list-style: none;
+  padding: 0;
+}
+
+.enquete-item {
+  margin-bottom: 1rem;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.enquete-item:hover {
+  background-color: #f0f0f0;
+}
+
+.enquete-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.enquete-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.enquete-titulo {
+  font-size: 1.1rem;
+  font-weight: 600;
 }

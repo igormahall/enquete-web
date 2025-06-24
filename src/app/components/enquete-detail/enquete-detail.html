@@ -2,22 +2,47 @@
   <div class="top-bar">
     <a routerLink="/" class="back-button">← Voltar para a Lista</a>
 
-    <div class="participant-input">
+    <!-- Campo de nome visível apenas se enquete está aberta -->
+    <div class="participant-input" *ngIf="enquete?.status === 'Aberta'">
       <label for="participant">Seu Nome (para votar):</label>
-      <input id="participant" type="text" [(ngModel)]="participantName" placeholder="Digite seu nome...">
+      <input
+        id="participant"
+        type="text"
+        [(ngModel)]="participantName"
+        placeholder="Digite seu nome..."
+        [disabled]="isVoting"
+      >
     </div>
   </div>
 
   <div *ngIf="enquete; else loading">
     <h1>{{ enquete.titulo }}</h1>
-    <p>Vote em uma das opções abaixo:</p>
 
+    <!-- Tempo restante -->
+    <p class="tempo-restante" *ngIf="enquete.status === 'Aberta'"
+       [ngClass]="{ 'tempo-restante': true, 'critico': tempoCritico }"
+    >
+      🕒 {{ tempoRestante }}
+    </p>
+
+    <!-- Mensagem de encerramento -->
+    <p *ngIf="enquete.status === 'Encerrada'" class="status-msg encerrada">
+      ⛔ Enquete encerrada.
+    </p>
+
+    <!-- Lista de opções -->
     <ul class="options-list">
-      <li *ngFor="let opcao of enquete.opcoes" [ngClass]="{'highlight': isMaxVotos(opcao.votos)}">
+      <li
+        *ngFor="let opcao of enquete.opcoes; trackBy: trackByOpcaoId"
+        [ngClass]="{'highlight': isMaxVotos(opcao.votos)}"
+      >
         <span>{{ opcao.texto_opcao }}</span>
         <div class="vote-section">
           <span class="votes">Votos: {{ opcao.votos }}</span>
-          <button (click)="votar(opcao.id)" [disabled]="isVoting || enquete.status === 'Fechada'">
+          <button
+            (click)="votar(opcao.id)"
+            [disabled]="isVoting || enquete.status !== 'Aberta'"
+          >
             {{ isVoting ? 'Votando...' : 'Votar' }}
           </button>
         </div>
