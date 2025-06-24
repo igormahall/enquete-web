@@ -1,9 +1,16 @@
-# 🧪 Pollab — The Opinion Lab (Frontend)
+# 🧪 Pollab — Frontend
 
-Pollab is a modern, minimalist polling platform for real-time participation and feedback. With a clean UI and dynamic voting experience, users can create, share, and vote on surveys effortlessly.
+**About Pollab**
 
-Built with **Angular 17** (using Standalone Components and Reactive Forms) and powered by a **Django REST API**, Pollab is ideal for feedback collection, decision-making, and interactive demonstrations.
+**Pollab** (short for Poll Laboratory) is a modern, open-source polling platform designed to 
+simplify the way users gather opinions and make decisions. Built with **Angular 17** and 
+integrated with a **Django REST API**, Pollab features:
+- 🧠 A clean and responsive UI 
+- ⚙️ Reactive Forms with validation
+- 🕒 Real-time vote tracking and countdown timers
+- 📢 Toast notifications for a smooth UX
 
+Whether you're testing ideas, collecting feedback, or showcasing interactive demos — Pollab lets you create, vote, and visualize results in seconds.
 > **Join. Experiment. Transform.**
 
 ## Interface
