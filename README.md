@@ -55,7 +55,7 @@ src/app
 Before getting started, make sure the following tools are installed on your system:
 
 - [Node.js (LTS version ≥ 18.x)](https://nodejs.org/pt/download/current)) (added to `PATH`)
-- [Angular CLI (≥ 17.x)] — to install globally, run:
+- Angular CLI (≥ 17.x) — to install globally, run:
   ```bash
   npm install -g @angular/cli
   ```
