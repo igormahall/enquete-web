@@ -1,123 +1,152 @@
-# 🗳️ Frontend Angular — Sistema de Enquetes
+# 🧪 Pollab — The Opinion Lab (Frontend)
 
-Interface web para consumir a **API de Enquetes** (Django).  
-Construída em **Angular 17** com _Standalone Components_ e **Reactive Forms**.
+Pollab is a modern, minimalist polling platform for real-time participation and feedback. With a clean UI and dynamic voting experience, users can create, share, and vote on surveys effortlessly.
+
+Built with **Angular 17** (using Standalone Components and Reactive Forms) and powered by a **Django REST API**, Pollab is ideal for feedback collection, decision-making, and interactive demonstrations.
+
+> **Join. Experiment. Transform.**
+
+## Interface
+
+<p align="center">
+  <img src="readme_assets/pollab_lista.png" alt="Lista" width="30%"/>
+  <img src="readme_assets/pollab_create.png" alt="Criar" width="30%"/>
+  <img src="readme_assets/pollab_details.png" alt="Detalhes" width="30%"/>
+  <img src="readme_assets/pollab_exception.png" alt="Exception" width="30%"/>
+  <img src="readme_assets/pollab_closed.png" alt="Closed" width="30%"/>
+</p>
 
 ---
 
-## ✨ Visão Geral
+## ✨ Overview
 
-| Item            | Detalhe                                                  |
-|-----------------|----------------------------------------------------------|
-| **Stack**       | Angular 17 · TypeScript · RxJS · Vite · Tailwind         |
-| **Arquitetura** | Standalone Components + Services + feature folders       |
-| **API**         | Django REST Framework (`/api/enquetes/…`)                |
-| **Estado**      | Serviços `EnqueteService` + Observables (RxJS)           |
-| **Build**       | `ng build`                                               |
-| **Deploy**      | Qualquer host de sites estáticos (Netlify, Vercel, etc.) |
+| Item             | Details                                            |
+|------------------|----------------------------------------------------|
+| **Stack**        | Angular 17 · TypeScript · RxJS · Vite · Tailwind   |
+| **Architecture** | Standalone Components + Services + feature folders |
+| **API**          | Django REST Framework (`/api/enquetes/…`)          |
+| **State**        | `EnqueteService` + Observables (RxJS)              |
+| **Build**        | `ng build`                                         |
+| **Deploy**       | Netlify                                            |
 
 ---
 
-## 📂 Estrutura de Pastas (src/app)
+## 📂 Folder Structure (`src/app`)
 
 ```
 src/app
-├─ models/        # Interfaces TypeScript (Enquete, Opcao)
-├─ services/      # Lógica de acesso à API e de notificações
-├─ components/    # Componentes de UI para cada tela/feature
-└─ app.routes.ts  # Rotas raiz da aplicação
+├─ models/        # TypeScript Interfaces (Poll, Option)
+├─ services/      # API access and notification logic
+├─ components/    # UI components for each feature/view
+└─ app.routes.ts  # Root routes of the application
 ```
 
----
+## ⚙️ Setup
 
-## ⚙️ Configuração Inicial
-
-1. **Clonar e Instalar**
+1. **Clone & Install**
    ```bash
-   # Clonar o repositório
-   git clone https://github.com/<seu-usuario>/enquete-web.git
-   cd enquete-web
-   
-   # Instalar dependências
+   git clone https://github.com/igormahall/pollab-frontend.git
+   cd pollab-frontend
    npm install
    ```
 
-2. **Configurar a API de Backend**
-   - Este projeto precisa da **API Django** (`enquete-api`) rodando localmente.
-   - No arquivo `src/environments/environment.ts`, certifique-se de que a apiUrl está apontando para o seu backend (ex: `http://127.0.0.1:8000/api`).
+2. **Backend Configuration**
+   - Requires the **Django API** (`poll-api`) running locally.
+   - Edit `src/environments/environment.ts` and ensure `apiUrl` points to your local backend (e.g. `http://127.0.0.1:8000/api`).
    
 
-3. **Executar o App**  
+3. **Run the App**  
    ```bash
    ng serve
    ```
 
 ---
 
-## 🎯 Funcionalidades Principais
+## 🎯 Features
 
-### Gerenciamento de Dados (Services)
+1. **Dinamic Voting**
 
-A interação com a API é centralizada no EnqueteService para desacoplamento e reutilização.
+- Each poll displays its available options and the number of votes per option.
+- Visual highlight for the most voted option.
+- Voting buttons with state control (e.g., disabled when voting or after poll closure).
 
-| Método                | Chamada                          | Descrição                                              |
-|-----------------------|----------------------------------|--------------------------------------------------------|
-| `getEnquetes()`       | `GET /api/enquetes/`             | Lista todas as enquetes (abertas e fechadas).          |
-| `getEnqueteById(id)`  | `GET /api/enquetes/{id}/`        | Detalhes de uma enquete específica.                    |
-| `createEnquete(data)` | `POST /api/enquetes/`            | Cria uma nova enquete com `titulo` e `opcoes_input[]`. |
-| `votar(...)`          | `POST /api/enquetes/{id}/votar/` | Registra um voto para um `id_participante`.            |
+2. **Creation Form**
+
+- Reactive form with validation rules:
+  - Title must have at least 5 characters.
+  - Minimum of 2 and maximum of 10 options.
+  - Custom poll duration (in hours).
+- Options can be dynamically added or removed.
+- Visual feedback and clear error messages.
+
+3. **Notifications**
+
+- Success and error messages via  `NotificationService` and `NotificationComponent`.
+- Displayed as non-intrusive toast alerts for better UX.
+
+4. **Countdown Timer**
+
+- Displays the remaining time for each poll.
+- Visual alert when less than 5 minutes are left.
+
+### Data Handling (`services/`)
+
+API interaction is centralized in `EnqueteService` for clean separation and reuse.
+
+| Method              | Endpoint                          | Description                                                |
+|---------------------|-----------------------------------|------------------------------------------------------------|
+| `getEnquetes()`     | `GET /api/enquetes/`              | Lists all polls (open and closed).                         |
+| `getEnqueteById()`  | `GET /api/enquetes/{id}/`         | Fetches poll details.                                      |
+| `createEnquete()`   | `POST /api/enquetes/`             | Creates a poll with `title`, `options_input[]`, and `duration`. |
+| `votar(...)`        | `POST /api/enquetes/{id}/votar/`  | Casts a vote for a given `participant_id`.                 |
 
 ---
 
-## 🧩 Componentização & Rotas
+## 🧩 Components & Routing
 
-A interface foi dividida em componentes com responsabilidades claras, gerenciados pelo `app.routes.ts`.
+The UI is composed of focused components mapped by `app.routes.ts`.
 
-| Rota             | Componente                 | Responsabilidade                                                                                                 |
-|------------------|----------------------------|------------------------------------------------------------------------------------------------------------------|
-| `/`              | **EnqueteListComponent**   | Exibe a lista de enquetes, seu status e votos. Contém o link para "Nova Enquete".                                |
-| `/enquetes/:id`  | **EnqueteDetailComponent** | Exibe os detalhes de uma enquete, permite a votação e o re-torno à lista.                                        |
-| `/enquetes/nova` | **EnqueteFormComponent**   | Formulário reativo (`Reactive Forms`) para a criação de novas enquetes, com adição e remoção dinâmica de opções. |
-| _(global)_       | **NotificationComponent**  | Exibe notificações "toast" de sucesso e erro em toda a aplicação.                                                |
-| _(shell)_        | **AppComponent**           | Atua como o contêiner principal com o `<router-outlet>`.                                                         |
+| Route             | Component                 | Purpose                                                                                       |
+|-------------------|---------------------------|-----------------------------------------------------------------------------------------------|
+| `/`               | `EnqueteListComponent`    | Displays poll list, vote counts, and creation shortcut.                                      |
+| `/enquetes/:id`   | `EnqueteDetailComponent`  | Shows poll details, enables voting, and shows result highlight.                              |
+| `/enquetes/nova`  | `EnqueteFormComponent`    | Reactive form to create polls, with dynamic option management.                               |
+| _(global)_        | `NotificationComponent`   | Global toast notifications for feedback.                                                     |
+| _(shell)_         | `AppComponent`            | Root container with `<router-outlet>`.                                                       |
+---
+
+## 💎 UX Highlights
+
+- **Smart Toasts**: `NotificationService` provides real-time feedback for actions like voting and creation.
+- **Single Vote Safety**: Buttons are disabled during submission with loading labels.
+- **Highlight Leader**: Top-voted option gets visual emphasis.
+- **Poll Status**: Banners clearly mark closed polls and disable interaction.
+- **Simulated Users**: A name field simulates multi-user voting for testing.
+- **Minimal Navigation**: Back button returns cleanly to poll list without history issues.
 
 ---
 
-## 💎 Experiência do Usuário (UX)
+## 🚀 Deployment
 
-- **Notificações "Toast"**: O `NotificationService` exibe feedback não-intrusivo para ações como criação de enquetes e erros de votação.
-- **Votação segura**: Os botões são desabilitados e o texto muda para `"Votando..."` durante a requisição para evitar cliques duplos.
-- **Destaque do vencedor**: A opção com mais votos recebe um destaque visual na tela de detalhes.
-- **Status da enquete**: Um "banner" informa se a enquete está **Fechada** e desabilita os botões de voto. Tags visuais na lista principal também mostram o status.
-- **Simulação de multi-usuário**: Um campo de texto para o nome do participante permite testar a regra de "1 voto por usuário" de forma flexível.
-- **Navegação limpa**: O `routerLink="/"` no botão **Voltar** garante que o usuário sepre retorne à lista principal, evitando loops no histórico do navegador.
-
----
-
-## 🚀 Deploy
-
-1. **Backend**: publique o Django (Render, Heroku).
+1. **Backend**: Deploy Django API (Render, Heroku, etc.)
 2. **Frontend**:
-   - Atualize a `apiURL` no arquivo `src_environments/environment.prod.ts` com a URL do seu backend em produção;
-   - Execute o comando de build:
-      ```bash
-      ng build
-      ```
-   - Faça o upload do conteúdo da pasta `dist/enquete-web` para um host de sites estáticos (ex: Netlify, Vercel).
+  - Update the production URL in `src/environments/environment.prod.ts`.
+  - Build:
+    ```bash
+    ng build
+    ```
+  - Upload the contents of `dist/pollab-frontend` to a static host (e.g. Netlify, Vercel).
 
-
-3. **CORS**: Lembre-se de atualizar a variável `CORS_ALLOWED_ORIGINS` no seu ambiente de produção do Django 
-para incluir a URL do seu frontend online.
+3. **CORS**: Remember to include your frontend URL in Django's `CORS_ALLOWED_ORIGINS`.
 
 ---
 
-## 🤝 Contribuição
+## 🤝 Contributing
 
-Contribuições são bem-vindas! Se você quiser sugerir melhorias, relatar bugs ou propor novas funcionalidades, 
-sinta-se à vontade para abrir uma issue ou pull request.
+Open to contributions! Suggest features, improvements or fixes via issues or PRs.
 
 ---
 
-## 📝 Licença
+## 📝 License
 
-Distribuído sob a licença **MIT**.
+Distributed under the **MIT** license.
