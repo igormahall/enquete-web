@@ -50,6 +50,19 @@ src/app
 
 ## ⚙️ Setup
 
+0. **Prerequisites**
+
+Before getting started, make sure the following tools are installed on your system:
+
+- [Node.js (LTS version ≥ 18.x)](https://nodejs.org/pt/download/current)) (added to `PATH`)
+- [Angular CLI (≥ 17.x)] — to install globally, run:
+  ```bash
+  npm install -g @angular/cli
+  ```
+- [Git](https://git-scm.com/)
+- [PyCharm Community](https://www.jetbrains.com/pycharm/download)
+- [JetBrains WebStorm](https://www.jetbrains.com/webstorm/download) _optional_
+
 1. **Clone & Install**
    ```bash
    git clone https://github.com/igormahall/pollab-frontend.git
@@ -58,7 +71,7 @@ src/app
    ```
 
 2. **Backend Configuration**
-   - Requires the **Django API** (`poll-api`) running locally.
+   - Requires the **Django API** (`pollab-backend`) running locally.
    - Edit `src/environments/environment.ts` and ensure `apiUrl` points to your local backend (e.g. `http://127.0.0.1:8000/api`).
    
 
