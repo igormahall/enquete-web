@@ -60,8 +60,7 @@ Before getting started, make sure the following tools are installed on your syst
   npm install -g @angular/cli
   ```
 - [Git](https://git-scm.com/)
-- [PyCharm Community](https://www.jetbrains.com/pycharm/download)
-- [JetBrains WebStorm](https://www.jetbrains.com/webstorm/download) _optional_
+- [JetBrains WebStorm](https://www.jetbrains.com/webstorm/download) (optional)
 
 1. **Clone & Install**
    ```bash
