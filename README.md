@@ -1,19 +1,30 @@
-# 🧪 Pollab — Frontend
+# 🧪 Pollab — Frontend · [Live Demo](https://pollab-web.netlify.app/)
 
-**About Pollab**
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e0912439-62f7-4432-a787-024ed6293350/deploy-status)](https://pollab-web.netlify.app/)
+![Angular](https://img.shields.io/badge/Angular-17-red)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.9-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-**Pollab** (short for Poll Laboratory) is a modern, open-source polling platform designed to 
-simplify the way users gather opinions and make decisions. Built with **Angular 17** and 
-integrated with a **Django REST API**, Pollab features:
-- 🧠 A clean and responsive UI 
-- ⚙️ Reactive Forms with validation
+## About Pollab
+
+**Pollab** (short for *Poll Laboratory*) is a modern, open-source polling platform designed to streamline the 
+process of gathering opinions and making decisions. Built with **Angular 17** and powered by a **Django REST API**, 
+it offers:
+
+- 🧠 Clean and responsive UI 
+- ⚙️ Reactive Forms with robust validation
 - 🕒 Real-time vote tracking and countdown timers
-- 📢 Toast notifications for a smooth UX
+- 📢 Toast notifications for immediate feedback
 
-Whether you're testing ideas, collecting feedback, or showcasing interactive demos — Pollab lets you create, vote, and visualize results in seconds.
+Whether you're testing ideas, collecting feedback, or showcasing interactive demos — Pollab lets you create, vote, 
+and visualize results in seconds.
 > **Join. Experiment. Transform.**
+> 
+> 👉 Try it now at [pollab-web.netlify.app](https://pollab-web.netlify.app/).
 
-## Interface
+---
+
+## Application Screens
 
 <p align="center">
   <img src="readme_assets/pollab_lista.png" alt="Lista" width="30%"/>
@@ -27,14 +38,14 @@ Whether you're testing ideas, collecting feedback, or showcasing interactive dem
 
 ## ✨ Overview
 
-| Item             | Details                                            |
-|------------------|----------------------------------------------------|
-| **Stack**        | Angular 17 · TypeScript · RxJS · Vite · Tailwind   |
-| **Architecture** | Standalone Components + Services + feature folders |
-| **API**          | Django REST Framework (`/api/enquetes/…`)          |
-| **State**        | `EnqueteService` + Observables (RxJS)              |
-| **Build**        | `ng build`                                         |
-| **Deploy**       | Netlify                                            |
+| Item                | Details                                              |
+|---------------------|------------------------------------------------------|
+| **Frontend Stack**  | Angular 17 · TypeScript · RxJS · Vite · Tailwind CSS |
+| **Architecture**    | Standalone Components · Services · Feature Folders   |
+| **API Source**      | Django REST Framework (`/api/enquetes/…`)            |
+| **State Handling**  | `EnqueteService` with RxJS Observables               |
+| **Build Command**   | `ng build`                                           |
+| **Deployment**      | Hosted via Netlify                                   |
 
 ---
 
@@ -43,129 +54,145 @@ Whether you're testing ideas, collecting feedback, or showcasing interactive dem
 ```
 src/app
 ├─ models/        # TypeScript Interfaces (Poll, Option)
-├─ services/      # API access and notification logic
-├─ components/    # UI components for each feature/view
-└─ app.routes.ts  # Root routes of the application
+├─ services/      # Handles API access and notifications
+├─ components/    # UI logic per feature/view
+└─ app.routes.ts  # App-wide route configuration
 ```
+---
 
-## ⚙️ Setup
+## ⚙️ Setup Instructions
 
-0. **Prerequisites**
+### 0. Prerequisites
 
-Before getting started, make sure the following tools are installed on your system:
+Ensure the following tools are installed on your system:
 
-- [Node.js (LTS version ≥ 18.x)](https://nodejs.org/pt/download/current)) (added to `PATH`)
-- Angular CLI (≥ 17.x) — to install globally, run:
+- [Node.js (LTS ≥ 18.x)](https://nodejs.org/pt/download/current)) (added to `PATH`)
+- Angular CLI (≥ 17.x)
   ```bash
   npm install -g @angular/cli
   ```
 - [Git](https://git-scm.com/)
-- [JetBrains WebStorm](https://www.jetbrains.com/webstorm/download) (optional)
+- [WebStorm](https://www.jetbrains.com/webstorm/download) or preferred code editor
 
-1. **Clone & Install**
-   ```bash
-   git clone https://github.com/igormahall/pollab-frontend.git
-   cd pollab-frontend
-   npm install
-   ```
+### 1. Clone and Install Dependencies
+```bash
+git clone https://github.com/igormahall/pollab-frontend.git
+cd pollab-frontend
+npm install
+```
 
-2. **Backend Configuration**
-   - Requires the **Django API** (`pollab-backend`) running locally.
-   - Edit `src/environments/environment.ts` and ensure `apiUrl` points to your local backend (e.g. `http://127.0.0.1:8000/api`).
-   
+### 2. Backend API Configuration
+   - Ensure that the **Django API** (`pollab-backend`) is running.
+   - Update `src/environments/environment.ts`:
+      ```ts
+      export const environment = {
+      production: false,
+      apiUrl: 'http://127.0.0.1:8000/api'
+      };
+      ```
+  - Alternatively, point to the deployed backend if available.
 
-3. **Run the App**  
+### 3. Run the App  
    ```bash
    ng serve
    ```
 
 ---
 
-## 🎯 Features
+## 🎯 Core Features
 
-1. **Dinamic Voting**
+### 🗳️ Dinamic Voting
+- Visualize vote counts in real time
+- Leading option is visually highlighted
+- Voting disabled after submission or poll expiration
 
-- Each poll displays its available options and the number of votes per option.
-- Visual highlight for the most voted option.
-- Voting buttons with state control (e.g., disabled when voting or after poll closure).
+### 🧾 Pool Creation
+- Reactive form with client-side validation
+  - Title ≥ 5 characters
+  - 2–10 options
+  - Custom expiration in hours
+- Options are dynamically managed (add/remove)
 
-2. **Creation Form**
+### 🔔 Toast Notifications
+- Centralized via `NotificationService`
+- Styled toast alerts (success/failure) via `NotificationComponent`
 
-- Reactive form with validation rules:
-  - Title must have at least 5 characters.
-  - Minimum of 2 and maximum of 10 options.
-  - Custom poll duration (in hours).
-- Options can be dynamically added or removed.
-- Visual feedback and clear error messages.
-
-3. **Notifications**
-
-- Success and error messages via  `NotificationService` and `NotificationComponent`.
-- Displayed as non-intrusive toast alerts for better UX.
-
-4. **Countdown Timer**
-
-- Displays the remaining time for each poll.
-- Visual alert when less than 5 minutes are left.
-
-### Data Handling (`services/`)
-
-API interaction is centralized in `EnqueteService` for clean separation and reuse.
-
-| Method              | Endpoint                          | Description                                                |
-|---------------------|-----------------------------------|------------------------------------------------------------|
-| `getEnquetes()`     | `GET /api/enquetes/`              | Lists all polls (open and closed).                         |
-| `getEnqueteById()`  | `GET /api/enquetes/{id}/`         | Fetches poll details.                                      |
-| `createEnquete()`   | `POST /api/enquetes/`             | Creates a poll with `title`, `options_input[]`, and `duration`. |
-| `votar(...)`        | `POST /api/enquetes/{id}/votar/`  | Casts a vote for a given `participant_id`.                 |
+### ⏳ Countdown Timer
+- Live countdown for each pool
+- Warning styles when under 5 minutes
 
 ---
 
-## 🧩 Components & Routing
+## 🧩 API Integration
+
+API interaction is encapsulated in `EnqueteService`.
+
+| Method              | Endpoint                          | Description                                          |
+|---------------------|-----------------------------------|------------------------------------------------------|
+| `getEnquetes()`     | `GET /api/enquetes/`              | Lists all polls                                      |
+| `getEnqueteById()`  | `GET /api/enquetes/{id}/`         | Retrieves specific poll data                         |
+| `createEnquete()`   | `POST /api/enquetes/`             | Creates a poll with title, duration, options         |
+| `votar(...)`        | `POST /api/enquetes/{id}/votar/`  | Submits a vote with `id_opcao` and `id_participante` |
+
+---
+
+## 🚦 Routing Overview
 
 The UI is composed of focused components mapped by `app.routes.ts`.
 
 | Route             | Component                 | Purpose                                                                                       |
 |-------------------|---------------------------|-----------------------------------------------------------------------------------------------|
-| `/`               | `EnqueteListComponent`    | Displays poll list, vote counts, and creation shortcut.                                      |
-| `/enquetes/:id`   | `EnqueteDetailComponent`  | Shows poll details, enables voting, and shows result highlight.                              |
-| `/enquetes/nova`  | `EnqueteFormComponent`    | Reactive form to create polls, with dynamic option management.                               |
-| _(global)_        | `NotificationComponent`   | Global toast notifications for feedback.                                                     |
-| _(shell)_         | `AppComponent`            | Root container with `<router-outlet>`.                                                       |
+| `/`               | `EnqueteListComponent`    | Shows all polls with quick access to creation                                      |
+| `/enquetes/:id`   | `EnqueteDetailComponent`  | Vote on and view details of a selected poll                              |
+| `/enquetes/nova`  | `EnqueteFormComponent`    | Form interface for creating new polls                               |
+| _(global)_        | `NotificationComponent`   | Displays toast notifications across the app                                                     |
+| _(shell)_         | `AppComponent`            | Root layout including `<router-outlet>`.                                                       |
 ---
 
 ## 💎 UX Highlights
 
-- **Smart Toasts**: `NotificationService` provides real-time feedback for actions like voting and creation.
-- **Single Vote Safety**: Buttons are disabled during submission with loading labels.
-- **Highlight Leader**: Top-voted option gets visual emphasis.
-- **Poll Status**: Banners clearly mark closed polls and disable interaction.
-- **Simulated Users**: A name field simulates multi-user voting for testing.
-- **Minimal Navigation**: Back button returns cleanly to poll list without history issues.
+- **Intelligent Toasts** — User-friendly feedback on success/failure
+- **Vote Safety** — Prevents double submissions and errors
+- **Option Highlighting** — Top-voted option stands out visually
+- **Poll Status Labels** — "Closed" banners with disabled inputs
+- **Simulated Users** — Voter ID field simulates multi-user behavior
+- **Smooth Navigation** — Back navigation returns safely to the main list
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment Guide
 
-1. **Backend**: Deploy Django API (Render, Heroku, etc.)
-2. **Frontend**:
-  - Update the production URL in `src/environments/environment.prod.ts`.
-  - Build:
+1. **Backend**
+   - Deploy Django API (e.g., Render, Railway, Heroku)
+
+
+2. **Frontend**
+  - Update `src/environments/environment.prod.ts`:
+    ```ts
+    export const environment = {
+      production: true,
+      apiUrl: 'https://your-backend-url/api'
+    };
+    ```
+  - Build and deploy:
     ```bash
     ng build
     ```
-  - Upload the contents of `dist/pollab-frontend` to a static host (e.g. Netlify, Vercel).
+  - Upload the output from `dist/pollab-frontend` to any static host (e.g. Netlify)
 
-3. **CORS**: Remember to include your frontend URL in Django's `CORS_ALLOWED_ORIGINS`.
+3. **Django CORS**
+   - Add the frontend domain to `CORS_ALLOWED_ORIGINS` in your Django settings
 
 ---
 
 ## 🤝 Contributing
 
-Open to contributions! Suggest features, improvements or fixes via issues or PRs.
+All contributions are welcome!
+
+Open an issue or submit a pull request to suggest features, fixes, or enhancements.
 
 ---
 
 ## 📝 License
 
-Distributed under the **MIT** license.
+Released under the **MIT** license.
